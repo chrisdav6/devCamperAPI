@@ -2,12 +2,22 @@ const Bootcamp = require('../models/Bootcamp');
 
 //Route   GET /api/v1/bootcamps
 //Access  Public
-exports.getBootcamps = (req, res, next) => {
-  res.status(200)
-    .json({
-      success: true,
-      msg: 'Show all bootcamps'
-    });
+exports.getBootcamps = async (req, res, next) => {
+  try {
+    //Get all bootcamps
+    const bootcamps = await Bootcamp.find();
+    //Send Response
+    res.status(200)
+      .json({
+        success: true,
+        data: bootcamps
+      });
+  } catch (err) {
+    res.status(400)
+      .json({
+        success: false
+      });
+  }
 };
 
 //Desc    Get single bootcamp by ID
