@@ -4,6 +4,7 @@ const port = process.env.PORT || 3000;
 const bootcamps = require('./routes/bootcamps');
 const logger = require('morgan');
 const colors = require('colors');
+const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
 const app = express();
 
@@ -20,6 +21,9 @@ connectDB();
 
 //Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
+
+//Use ErrorHandler - Must be placed after mounted routers
+app.use(errorHandler);
 
 //Start Server
 const server = app.listen(port, () => {
