@@ -103,10 +103,27 @@ exports.updateBootcamp = async (req, res, next) => {
 //Desc    Delete bootcamp by ID
 //Route   DELETE /api/v1/bootcamps/:id
 //Access  Private
-exports.deleteBootcamp = (req, res, next) => {
-  res.status(200)
-    .json({
-      success: true,
-      msg: `Delete bootcamp ${req.params.id}`
-    });
+exports.deleteBootcamp = async (req, res, next) => {
+  try {
+    //Get single bootcamp by ID and Delete
+    const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+    //Send Error if no Bootcamp found
+    if (!bootcamp) {
+      return res.status(400)
+        .json({
+          success: false
+        });
+    }
+    //Send Response
+    res.status(200)
+      .json({
+        success: true,
+        data: bootcamp
+      });
+  } catch (err) {
+    res.status(400)
+      .json({
+        success: false
+      });
+  }
 };
