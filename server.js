@@ -7,6 +7,9 @@ const colors = require('colors');
 const connectDB = require('./config/db');
 const app = express();
 
+//Body Parser
+app.use(express.json());
+
 //Dev Logging Middleware
 if (process.env.NODE_ENV === 'development') {
   app.use(logger('dev'));

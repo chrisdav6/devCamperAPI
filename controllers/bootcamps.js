@@ -1,4 +1,5 @@
-//Desc    Get all bootcamps
+const Bootcamp = require('../models/Bootcamp');
+
 //Route   GET /api/v1/bootcamps
 //Access  Public
 exports.getBootcamps = (req, res, next) => {
@@ -23,12 +24,22 @@ exports.getBootcamp = (req, res, next) => {
 //Desc    Create new bootcamp
 //Route   POST /api/v1/bootcamps
 //Access  Private
-exports.createBootcamp = (req, res, next) => {
-  res.status(200)
-    .json({
-      success: true,
-      msg: 'Create new bootcamp'
-    });
+exports.createBootcamp = async (req, res, next) => {
+  try {
+    //Create Post
+    const bootcamp = await Bootcamp.create(req.body);
+    //Send Response
+    res.status(201)
+      .json({
+        success: true,
+        data: bootcamp
+      });
+  } catch (err) {
+    res.status(400)
+      .json({
+        success: false
+      });
+  }
 };
 
 //Desc    Update bootcamp by ID
