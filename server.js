@@ -2,6 +2,7 @@ const express = require('express');
 require('dotenv').config({ path: './config/config.env' });
 const port = process.env.PORT || 3000;
 const bootcamps = require('./routes/bootcamps');
+const courses = require('./routes/courses');
 const logger = require('morgan');
 const colors = require('colors');
 const errorHandler = require('./middleware/error');
@@ -21,6 +22,7 @@ connectDB();
 
 //Mount Routers
 app.use('/api/v1/bootcamps', bootcamps);
+app.use('/api/v1/courses', courses);
 
 //Use ErrorHandler - Must be placed after mounted routers
 app.use(errorHandler);
