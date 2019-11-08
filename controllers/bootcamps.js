@@ -139,11 +139,13 @@ exports.updateBootcamp = asyncHandler(async (req, res, next) => {
 //Access  Private
 exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   //Get single bootcamp by ID and Delete
-  const bootcamp = await Bootcamp.findByIdAndDelete(req.params.id);
+  const bootcamp = await Bootcamp.findById(req.params.id);
   //Send Error if no Bootcamp found
   if (!bootcamp) {
     return next(new ErrorResponse(`Bootcamp not found with ID of ${req.params.id}`, 404));
   }
+  //Remove bootcamp here so that it triggers 'remove' mongoose middleware to cascade delete courses
+  bootcamp.remove();
   //Send Response
   res.status(200)
     .json({
