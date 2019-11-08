@@ -103,7 +103,7 @@ exports.getBootcamp = asyncHandler(async (req, res, next) => {
 //Route   POST /api/v1/bootcamps
 //Access  Private
 exports.createBootcamp = asyncHandler(async (req, res, next) => {
-  //Create Post
+  //Create Bootcamp
   const bootcamp = await Bootcamp.create(req.body);
   //Send Response
   res.status(201)
