@@ -96,3 +96,23 @@ exports.updateCourse = asyncHandler(async (req, res, next) => {
     });
 });
 
+//Desc    Delete course by ID
+//Route   DELETE /api/v1/courses/:id
+//Access  Private
+exports.deleteCourse = asyncHandler(async (req, res, next) => {
+  //Get single course by ID
+  const course = await Course.findById(req.params.id);
+  //Send Error if no Course found
+  if (!course) {
+    return next(new ErrorResponse(`Course not found with ID of ${req.params.id}`, 404));
+  }
+  //Remove course here so that it triggers 'remove' mongoose middleware to cascade delete
+  course.remove();
+  //Send Response
+  res.status(200)
+    .json({
+      success: true,
+      data: course
+    });
+});
+
