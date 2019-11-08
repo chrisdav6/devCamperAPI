@@ -107,7 +107,7 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Course not found with ID of ${req.params.id}`, 404));
   }
   //Remove course here so that it triggers 'remove' mongoose middleware to cascade delete
-  course.remove();
+  await course.remove();
   //Send Response
   res.status(200)
     .json({

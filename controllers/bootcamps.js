@@ -145,7 +145,7 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
     return next(new ErrorResponse(`Bootcamp not found with ID of ${req.params.id}`, 404));
   }
   //Remove bootcamp here so that it triggers 'remove' mongoose middleware to cascade delete courses
-  bootcamp.remove();
+  await bootcamp.remove();
   //Send Response
   res.status(200)
     .json({
