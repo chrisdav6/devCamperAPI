@@ -8,6 +8,10 @@ const {
   deleteBootcamp,
   bootcampPhotoUpload } = require('../controllers/bootcamps');
 const router = express.Router();
+const Bootcamp = require('../models/Bootcamp');
+
+//Advanced results
+const advancedResults = require('../middleware/advancedResults');
 
 //Include other resource routers
 const courseRouter = require('./courses');
@@ -15,7 +19,7 @@ const courseRouter = require('./courses');
 router.use('/:bootcampId/courses', courseRouter);
 
 //GET - Get all bootcamps
-router.get('/', getBootcamps);
+router.get('/', advancedResults(Bootcamp, 'courses'), getBootcamps);
 
 //GET - Get bootcamp by ID
 router.get('/:id', getBootcamp);
