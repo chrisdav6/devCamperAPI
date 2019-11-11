@@ -21,10 +21,10 @@ const importData = asyncHandler(async () => {
   await Bootcamp.deleteMany();
   await Course.deleteMany();
   await Bootcamp.create(bootcamps);
-  //await Course.create(courses);
+  await Course.create(courses);
   console.log(`Old data deleted!`.red.inverse);
   console.log(`New data Seeded!`.green.inverse);
-  mongoose.connection.close();
+  process.exit();
 });
 
 importData();
