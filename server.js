@@ -1,3 +1,4 @@
+const path = require('path');
 const express = require('express');
 require('dotenv').config({ path: './config/config.env' });
 const port = process.env.PORT || 3000;
@@ -5,6 +6,7 @@ const bootcamps = require('./routes/bootcamps');
 const courses = require('./routes/courses');
 const logger = require('morgan');
 const colors = require('colors');
+const fileUpload = require('express-fileupload');
 const errorHandler = require('./middleware/error');
 const connectDB = require('./config/db');
 const app = express();
@@ -16,6 +18,12 @@ app.use(express.json());
 if (process.env.NODE_ENV === 'development') {
   app.use(logger('dev'));
 }
+
+//File Upload
+app.use(fileUpload());
+
+//Set Static Public Folder
+app.use(express.static(path.join(__dirname, 'public')));
 
 //Connect to Database
 connectDB();

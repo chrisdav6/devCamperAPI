@@ -5,7 +5,8 @@ const {
   getBootcampsInRadius,
   createBootcamp,
   updateBootcamp,
-  deleteBootcamp } = require('../controllers/bootcamps');
+  deleteBootcamp,
+  bootcampPhotoUpload } = require('../controllers/bootcamps');
 const router = express.Router();
 
 //Include other resource routers
@@ -30,5 +31,8 @@ router.put('/:id', updateBootcamp);
 
 //DELETE - Delete bootcamp by ID
 router.delete('/:id', deleteBootcamp);
+
+//PUT - Upload bootcamp photo
+router.put('/:id/photo', bootcampPhotoUpload);
 
 module.exports = router;
