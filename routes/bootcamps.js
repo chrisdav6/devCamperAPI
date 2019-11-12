@@ -7,6 +7,7 @@ const {
   updateBootcamp,
   deleteBootcamp,
   bootcampPhotoUpload } = require('../controllers/bootcamps');
+const { protect } = require('../middleware/auth');
 const router = express.Router();
 const Bootcamp = require('../models/Bootcamp');
 
@@ -28,15 +29,15 @@ router.get('/:id', getBootcamp);
 router.get('/radius/:zipcode/:distance', getBootcampsInRadius);
 
 //POST - Create new bootcamp
-router.post('/', createBootcamp);
+router.post('/', protect, createBootcamp);
 
 //PUT - Update bootcamp by ID
-router.put('/:id', updateBootcamp);
+router.put('/:id', protect, updateBootcamp);
 
 //DELETE - Delete bootcamp by ID
-router.delete('/:id', deleteBootcamp);
+router.delete('/:id', protect, deleteBootcamp);
 
 //PUT - Upload bootcamp photo
-router.put('/:id/photo', bootcampPhotoUpload);
+router.put('/:id/photo', protect, bootcampPhotoUpload);
 
 module.exports = router;
