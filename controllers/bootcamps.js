@@ -56,15 +56,21 @@ exports.createBootcamp = asyncHandler(async (req, res, next) => {
 //Route   PUT /api/v1/bootcamps/:id
 //Access  Private
 exports.updateBootcamp = asyncHandler(async (req, res, next) => {
-  //Get single bootcamp by ID and Update
-  const bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  });
+  //Get single bootcamp by ID
+  let bootcamp = await Bootcamp.findById(req.params.id);
   //Send Error if no Bootcamp found
   if (!bootcamp) {
     return next(new ErrorResponse(`Bootcamp not found with ID of ${req.params.id}`, 404));
   }
+  //Make sure user is bootcamp owner
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User with ID of ${req.params.id} is not authorized to update this bootcamp`, 401));
+  }
+  //Update bootcamp
+  bootcamp = await Bootcamp.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  });
   //Send Response
   res.status(200)
     .json({
@@ -82,6 +88,10 @@ exports.deleteBootcamp = asyncHandler(async (req, res, next) => {
   //Send Error if no Bootcamp found
   if (!bootcamp) {
     return next(new ErrorResponse(`Bootcamp not found with ID of ${req.params.id}`, 404));
+  }
+  //Make sure user is bootcamp owner
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User with ID of ${req.params.id} is not authorized to delete this bootcamp`, 401));
   }
   //Remove bootcamp here so that it triggers 'remove' mongoose middleware to cascade delete courses
   await bootcamp.remove();
