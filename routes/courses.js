@@ -5,7 +5,7 @@ const {
   createCourse,
   updateCourse,
   deleteCourse } = require('../controllers/courses');
-const { protect } = require('../middleware/auth');
+const { protect, authorize } = require('../middleware/auth');
 const router = express.Router({ mergeParams: true });
 const Course = require('../models/Course');
 
@@ -22,12 +22,12 @@ router.get('/', advancedResults(Course, {
 router.get('/:id', getCourse);
 
 //POST - Create new course
-router.post('/', protect, createCourse);
+router.post('/', protect, authorize('publisher', 'admin'), createCourse);
 
 //PUT - Update course by ID
-router.put('/:id', protect, updateCourse);
+router.put('/:id', protect, authorize('publisher', 'admin'), updateCourse);
 
 //DELETE - Delete course by ID
-router.delete('/:id', protect, deleteCourse);
+router.delete('/:id', protect, authorize('publisher', 'admin'), deleteCourse);
 
 module.exports = router;
