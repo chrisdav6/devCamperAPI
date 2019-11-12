@@ -46,6 +46,8 @@ exports.getCourse = asyncHandler(async (req, res, next) => {
 //Route   POST /api/v1/bootcamps/:bootcampId/courses
 //Access  Private
 exports.createCourse = asyncHandler(async (req, res, next) => {
+  //Get User
+  req.body.user = req.user.id;
   //Get Bootcamp id
   req.body.bootcamp = req.params.bootcampId;
   //Get bootcamp
@@ -53,6 +55,10 @@ exports.createCourse = asyncHandler(async (req, res, next) => {
   //Send Error if no Bootcamp found
   if (!bootcamp) {
     return next(new ErrorResponse(`Bootcamp not found with ID of ${req.params.bootcampId}`, 404));
+  }
+  //Make sure user is bootcamp owner
+  if (bootcamp.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User with ID of ${req.user.id} is not authorized to add a course to bootcamp ${bootcamp._id}`, 401));
   }
   //Create Course
   const course = await Course.create(req.body);
@@ -68,15 +74,21 @@ exports.createCourse = asyncHandler(async (req, res, next) => {
 //Route   PUT /api/v1/courses/:id
 //Access  Private
 exports.updateCourse = asyncHandler(async (req, res, next) => {
-  //Get single course by ID and Update
-  const course = await Course.findByIdAndUpdate(req.params.id, req.body, {
-    new: true,
-    runValidators: true
-  });
+  //Get single course by ID
+  let course = await Course.findById(req.params.id);
   //Send Error if no Course found
   if (!course) {
     return next(new ErrorResponse(`Course not found with ID of ${req.params.id}`, 404));
   }
+  //Make sure user is course owner
+  if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User with ID of ${req.user.id} is not authorized to update course ${course._id}`, 401));
+  }
+  //Update Course
+  course = await Course.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true
+  });
   //Send Response
   res.status(201)
     .json({
@@ -94,6 +106,10 @@ exports.deleteCourse = asyncHandler(async (req, res, next) => {
   //Send Error if no Course found
   if (!course) {
     return next(new ErrorResponse(`Course not found with ID of ${req.params.id}`, 404));
+  }
+  //Make sure user is course owner
+  if (course.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User with ID of ${req.user.id} is not authorized to delete course ${course._id}`, 401));
   }
   //Remove course here so that it triggers 'remove' mongoose middleware to cascade delete
   await course.remove();
