@@ -1,5 +1,5 @@
 const express = require('express');
-const { getReviews, getReview } = require('../controllers/reviews');
+const { getReviews, getReview, createReview } = require('../controllers/reviews');
 const { protect, authorize } = require('../middleware/auth');
 const router = express.Router({ mergeParams: true });
 const Review = require('../models/Review');
@@ -15,5 +15,8 @@ router.get('/', advancedResults(Review, {
 
 //GET - Get review by ID
 router.get('/:id', getReview);
+
+//POST - Create new review
+router.post('/', protect, authorize('user', 'admin'), createReview);
 
 module.exports = router;
