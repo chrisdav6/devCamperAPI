@@ -1,5 +1,5 @@
 const express = require('express');
-const { getReviews, getReview, createReview, updateReview } = require('../controllers/reviews');
+const { getReviews, getReview, createReview, updateReview, deleteReview } = require('../controllers/reviews');
 const { protect, authorize } = require('../middleware/auth');
 const router = express.Router({ mergeParams: true });
 const Review = require('../models/Review');
@@ -21,5 +21,8 @@ router.post('/', protect, authorize('user', 'admin'), createReview);
 
 //PUT - Update review by ID
 router.put('/:id', protect, authorize('user', 'admin'), updateReview);
+
+//DELETE - Delete review by ID
+router.delete('/:id', protect, authorize('user', 'admin'), deleteReview);
 
 module.exports = router;

@@ -92,3 +92,27 @@ exports.updateReview = asyncHandler(async (req, res, next) => {
       data: review
     });
 });
+
+//Desc    Delete review
+//Route   DELETE /api/v1/reviews/:id
+//Access  Private
+exports.deleteReview = asyncHandler(async (req, res, next) => {
+  //Find review by ID
+  let review = await Review.findById(req.params.id);
+  //Send Error if no review found
+  if (!review) {
+    return next(new ErrorResponse(`Review not found with ID of ${req.params.id}`, 404));
+  }
+  //Make sure review belongs to logged in user or user is admin
+  if (review.user.toString() !== req.user.id && req.user.role !== 'admin') {
+    return next(new ErrorResponse(`User with ID of ${req.user.id} is not authorized to update review ${review._id}`, 401));
+  }
+  //Delete review
+  await review.remove();
+  //Send Response
+  res.status(200)
+    .json({
+      success: true,
+      data: review
+    });
+});
