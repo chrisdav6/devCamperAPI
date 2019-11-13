@@ -123,6 +123,45 @@ exports.resetPassword = asyncHandler(async (req, res, next) => {
   sendTokenResponse(user, 200, res);
 });
 
+//Desc    Update user details
+//Route   PUT /api/v1/auth/updatedetails
+//Access  Private
+exports.updateDetails = asyncHandler(async (req, res, next) => {
+  //Get fields to update
+  const fieldsToUpdate = {
+    name: req.body.name,
+    email: req.body.email
+  };
+  //Get User by ID and Update
+  const user = await User.findByIdAndUpdate(req.user.id, fieldsToUpdate, {
+    new: true,
+    runValidators: true
+  });
+  //Send Response
+  res.status(200).json({
+    success: true,
+    data: user
+  });
+});
+
+//Desc    Update user password
+//Route   PUT /api/v1/auth/updatepassword
+//Access  Private
+exports.updatePassword = asyncHandler(async (req, res, next) => {
+  //Get User by ID and select password
+  const user = await User.findById(req.user.id).select('+password');
+  //Check current password
+  if (!(await user.matchPassword(req.body.currentPassword))) {
+    return next(new ErrorResponse(`Password is incorrect`, 401));
+  }
+  //Set password to new supplied password
+  user.password = req.body.newPassword;
+  //Save user
+  await user.save();
+  //Send token response
+  sendTokenResponse(user, 200, res);
+});
+
 //Get token from model, create cookie and send response
 const sendTokenResponse = (user, statusCode, res) => {
   //Create token
